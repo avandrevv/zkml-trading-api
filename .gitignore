@@ -1,0 +1,58 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+
+# EZKL (доказательства, ключи, схемы)
+*.ezkl
+*.key
+*.srs
+*.proof
+*.vk
+*.pk
+proofs/
+*.params
+
+# Базы данных
+*.db
+*.sqlite
+*.sqlite3
+
+*.log
+logs/
+*.tmp
+*.temp
+
+.env
+.secrets
+config.local.*
+*.secret
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+commands.txt
+
+# Файлы с результатами 
+proof_*.json
+witness_*.json
+
+# Jupyter Notebook 
+.ipynb_checkpoints/
+*.ipynb
+
+# Тестовые файлы
+test_*.py
+*_test.py
