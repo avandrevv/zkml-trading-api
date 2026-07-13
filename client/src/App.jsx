@@ -104,7 +104,7 @@ function App() {
       
       {/* ЛЕВАЯ ПАНЕЛЬ: ВВОД */}
       <div style={{ width: '350px', padding: '25px', backgroundColor: '#fff', borderRight: '1px solid #ddd', display: 'flex', flexDirection: 'column' }}>
-        <h2 style={{ marginBottom: '20px', color: '#1a1a1a' }}>🛡️ ZK ML Model</h2>
+        <h2 style={{ marginBottom: '20px', color: '#1a1a1a' }}>ZK ML Model</h2>
         
         <label style={{ fontSize: '12px', fontWeight: 'bold', color: '#666', marginBottom: '8px' }}>INPUT FEATURES (X)</label>
         <input 
