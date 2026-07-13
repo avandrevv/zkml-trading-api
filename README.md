@@ -103,3 +103,45 @@ npm run dev
 * **Параметры модели (Параметры/Веса):** `private` — скрыты внутри доказательства, никто не может узнать структуру коэффициентов сети.
 * **Входные данные (Признаки):** `public` — проверяющая сторона видит, на основе каких рыночных данных делался расчет.
 * **Выходные данные (Сигнал):** `public` — результат работы сети полностью открыт для верификации.
+
+## Визуализация архитектуры проекта
+
+```mermaid
+graph TD
+    %% Стиль для блоков
+    classDef client fill:#3b82f6,stroke:#1d4ed8,stroke-width:2px,color:#fff;
+    classDef server fill:#10b981,stroke:#047857,stroke-width:2px,color:#fff;
+    classDef queue fill:#f59e0b,stroke:#b45309,stroke-width:2px,color:#fff;
+    classDef worker fill:#8b5cf6,stroke:#6d28d9,stroke-width:2px,color:#fff;
+    classDef db fill:#ec4899,stroke:#be185d,stroke-width:2px,color:#fff;
+
+    %% Описание узлов
+    Client[React Client <br> UI / Input 10 Features]:::client
+    FastAPI[FastAPI Server <br> App API / Task Manager]:::server
+    Redis[Redis Queue <br> msg broker: task_queue]:::queue
+    Postgres[(PostgreSQL <br> DB: task_metadata)]:::db
+    Worker[ZKML Worker <br> Process Background Tasks]:::worker
+    EZKL[EZKL Engine <br> Halo2 / KZG SRS Setup]:::worker
+
+    %% Потоки данных / Взаимодействие
+    Client -->|1. POST /submit <br> Send Features| FastAPI
+    FastAPI -->|2. Save Metadata <br> status: queued| Postgres
+    FastAPI -->|3. LPUSH task| Redis
+    FastAPI -.->|4. Return task_id| Client
+
+    Redis -->|5. RPOPLPUSH / Fetch Task| Worker
+    Worker -->|6. Update status <br> status: processing| Postgres
+    
+    subgraph Execution [Background ZKML Processing]
+        Worker -->|7. Data Normalization <br> X - mean / std| Worker
+        Worker -->|8. Generate Witness & Proof| EZKL
+    end
+
+    Worker -->|9. Save Proof JSON <br> to proofs/ folder| Worker
+    Worker -->|10. Final Update <br> status: completed / failed| Postgres
+
+    Client -->|11. GET /result/task_id <br> Polling status & signal| FastAPI
+    FastAPI -.->|12. Fetch from DB| Postgres
+    Client -->|13. POST /verify/task_id <br> Crypto verification| FastAPI
+    FastAPI -->|14. Run verification with vk.key| EZKL
+```
